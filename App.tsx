@@ -12,7 +12,6 @@ import {
   ArrowRight,
   Globe,
   Database,
-  Search,
   Zap,
   ShieldCheck,
   TrendingUp,
@@ -25,9 +24,10 @@ import {
   Scale,
   Radar,
   ChevronDown,
-  ExternalLink,
-  Linkedin,
-  Box // Added Box icon
+  Briefcase,
+  Lock,
+  ArrowUpRight,
+  Factory
 } from 'lucide-react';
 import { 
   XAxis, 
@@ -36,28 +36,26 @@ import {
   Tooltip, 
   ResponsiveContainer,
   AreaChart,
-  Area,
-  BarChart,
-  Bar
+  Area
 } from 'recharts';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 
 const chartData = [
-  { name: 'Q1', spend: 4000, recovered: 120 },
-  { name: 'Q2', spend: 4200, recovered: 135 },
-  { name: 'Q3', spend: 3800, recovered: 115 },
-  { name: 'Q4', spend: 5100, recovered: 180 },
-  { name: 'Q1 (New)', spend: 4800, recovered: 155 },
+  { name: 'Jan', market: 100, ms: 100 },
+  { name: 'Feb', market: 115, ms: 108 },
+  { name: 'Mar', market: 140, ms: 115 },
+  { name: 'Apr', market: 210, ms: 140 },
+  { name: 'May', market: 180, ms: 130 },
+  { name: 'Jun', market: 230, ms: 160 },
+  { name: 'Jul', market: 280, ms: 190 },
 ];
 
-// Define FadeInProps interface to fix children and key property errors
 interface FadeInProps {
   children: React.ReactNode;
   delay?: number;
   direction?: 'up' | 'down' | 'left' | 'right';
 }
 
-// Using React.FC to ensure standard React prop handling for children and key
 const FadeIn: React.FC<FadeInProps> = ({ children, delay = 0, direction = 'up' }) => {
   return (
     <motion.div
@@ -75,31 +73,8 @@ const FadeIn: React.FC<FadeInProps> = ({ children, delay = 0, direction = 'up' }
   );
 };
 
-interface SectionHeaderProps {
-  id?: string;
-  title: string;
-  subtitle: string;
-  light?: boolean;
-}
-
-const SectionHeader: React.FC<SectionHeaderProps> = ({ id, title, subtitle, light = false }) => (
-  <FadeIn direction="up">
-    <div id={id} className="mb-16">
-      <div className={`text-xs font-black uppercase tracking-[0.4em] mb-4 ${light ? 'text-blue-400' : 'text-blue-600'}`}>
-        {subtitle}
-      </div>
-      <h2 className={`text-4xl md:text-6xl font-black tracking-tighter leading-[0.9] uppercase ${light ? 'text-white' : 'text-slate-900'}`}>
-        {title}
-      </h2>
-    </div>
-  </FadeIn>
-);
-
-const App: React.FC = () => {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+const Header = () => {
   const [scrolled, setScrolled] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
@@ -107,127 +82,113 @@ const App: React.FC = () => {
   }, []);
 
   return (
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6 ${scrolled ? 'bg-slate-950/90 backdrop-blur-md border-b border-white/5 py-4' : 'bg-transparent'}`}>
+      <div className="container mx-auto px-6 flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-600 rounded flex items-center justify-center font-black text-white text-xl">MS</div>
+          <span className="font-bold tracking-tighter text-xl hidden sm:block uppercase">Martin & Sorbo</span>
+        </div>
+        <div className="hidden lg:flex items-center gap-8">
+          {['Problem', 'Post-Audit', 'Validation', 'Pre-Audit', 'Clearing'].map((item) => (
+            <a key={item} href={`#${item.toLowerCase()}`} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition-colors">{item}</a>
+          ))}
+          <a href="#contact" className="px-6 py-2 bg-white text-slate-950 rounded font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">Free Assessment</a>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+const App: React.FC = () => {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  const shipY = useTransform(scrollYProgress, [0, 1], [0, 300]);
+
+  return (
     <div className="relative">
       <motion.div className="fixed top-0 left-0 right-0 h-1 bg-blue-600 origin-left z-[70]" style={{ scaleX }} />
+      <Header />
 
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6 ${scrolled ? 'bg-slate-950/90 backdrop-blur-xl border-b border-white/5 py-4' : 'bg-transparent'}`}>
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white text-xl transform transition-transform group-hover:rotate-3">MS</div>
-            <span className="font-bold tracking-tighter text-xl hidden sm:block uppercase text-white">Martin & Sorbo</span>
-          </div>
-          <div className="hidden lg:flex items-center gap-10">
-            {['Problem', 'Post-Audit', 'Validation', 'Gain-Share', 'Clearing'].map((item) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition-colors">
-                {item}
-              </a>
-            ))}
-            <button className="px-6 py-2.5 bg-white text-slate-950 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all transform hover:scale-105">
-              Contact Experts
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* HERO SECTION */}
+      {/* 0. HERO: CINEMATIC START */}
       <section className="relative h-screen flex items-center overflow-hidden bg-slate-950">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 opacity-40">
           <img 
             src="https://images.unsplash.com/photo-1542704792-e30dac463c90?auto=format&fit=crop&q=80&w=2400" 
-            alt="Maritime Engineering" 
-            className="w-full h-full object-cover grayscale opacity-40 brightness-50"
+            alt="Cargo Ship" 
+            className="w-full h-full object-cover grayscale brightness-50"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
         </div>
-        <div className="container mx-auto px-6 relative z-10">
+        <div className="container mx-auto px-6 relative z-10 pt-20">
           <FadeIn direction="up">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.4em] mb-8">
-              <Compass className="w-3 h-3" /> State-of-the-Art Invoicing Intelligence
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.3em] mb-8">
+              <Compass className="w-3 h-3" /> State-of-the-Art Ocean Freight Invoicing
             </div>
-            <h1 className="text-6xl md:text-[9rem] font-black text-white tracking-tighter leading-[0.8] uppercase mb-8">
-              ENFORCING <br/> <span className="text-blue-600">CONTRACT</span> <br/> INTEGRITY.
+            <h1 className="text-6xl md:text-[8rem] font-black text-white tracking-tighter leading-[0.8] uppercase mb-8">
+              Enforcement <br/> Of Contract <br/> <span className="text-blue-600">Integrity.</span>
             </h1>
-            <p className="text-xl md:text-3xl text-slate-400 max-w-3xl font-medium leading-tight mb-12">
-              Systematic ocean freight invoice auditing. <br/>
-              Recover lost margin and prevent future cash leakage with proprietary AI.
+            <p className="text-xl md:text-2xl text-slate-400 max-w-2xl font-medium leading-relaxed mb-12">
+              Systematic invoice auditing grounded in the world of global ocean freight. 
+              We reclaim lost capital through AI-driven deviation detection.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 items-center">
-              <button className="px-10 py-5 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest shadow-2xl shadow-blue-600/20 hover:bg-blue-500 transition-all flex items-center gap-3">
-                Recover Lost Capital <ArrowRight className="w-5 h-5" />
+              <button className="px-10 py-5 bg-blue-600 text-white rounded font-black uppercase tracking-widest shadow-2xl shadow-blue-600/30 hover:bg-blue-500 transition-all flex items-center gap-3">
+                Recover Lost Margin <ArrowRight className="w-5 h-5" />
               </button>
-              <div className="flex items-center gap-8 pl-4 border-l border-white/10 h-16">
+              <div className="flex items-center gap-6 pl-4 border-l border-white/10">
                  <div>
-                   <div className="text-white font-black text-3xl">1–3%</div>
-                   <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Average Recovery</div>
-                 </div>
-                 <div>
-                   <div className="text-white font-black text-3xl">0%</div>
-                   <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Risk Exposure</div>
+                   <div className="text-white font-black text-2xl">1–3%</div>
+                   <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Revenue Recovery</div>
                  </div>
               </div>
             </div>
           </FadeIn>
         </div>
-        <motion.div 
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2.5 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/20 flex flex-col items-center gap-4"
-        >
-          <span className="text-[8px] font-black uppercase tracking-[0.5em]">Scroll to Explore</span>
-          <ChevronDown className="w-4 h-4" />
+        <motion.div style={{ y: shipY }} className="absolute -bottom-20 -right-20 opacity-5 pointer-events-none hidden lg:block">
+           <Ship size={1000} strokeWidth={0.5} className="text-blue-500" />
         </motion.div>
       </section>
 
-      {/* 1. THE PROBLEM WE SOLVE */}
+      {/* 1. THE PROBLEM: COMPLEX & OPAQUE */}
       <section id="problem" className="py-32 bg-slate-950 blueprint-grid relative">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <FadeIn direction="right">
-              <SectionHeader subtitle="The Challenge" title="Invoicing is Opaque & Error-Prone." light />
-              <p className="text-xl text-slate-400 font-medium leading-relaxed mb-8">
-                Inconsistent interpretation of Incoterms, changing surcharges, and manual carrier processes result in normalized overbilling.
+              <div className="text-xs font-black text-blue-500 uppercase tracking-[0.4em] mb-4">Point 01</div>
+              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none mb-10 uppercase">Complex. <br/> Opaque. <br/> <span className="text-red-500">Error-Prone.</span></h2>
+              <p className="text-lg text-slate-400 leading-relaxed mb-10">
+                Ocean freight invoicing suffers from manual processes and fragmented data. Carrier invoices frequently deviate from agreed terms—overbilling is often accepted as a cost of doing business.
               </p>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { icon: <Activity className="text-red-500" />, label: "Deviations", value: "Fragmented Data" },
-                  { icon: <Database className="text-blue-500" />, label: "Source", value: "Surcharge Flux" },
-                  { icon: <Container className="text-slate-400" />, label: "Manual", value: "Human Error" },
-                  { icon: <Scale className="text-indigo-500" />, label: "Terms", value: "Incoterm Bias" },
-                ].map((item, i) => (
-                  <div key={i} className="p-6 glass rounded-2xl border border-white/5 hover:border-white/10 transition-colors">
-                    <div className="mb-4">{item.icon}</div>
-                    <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">{item.label}</div>
-                    <div className="text-white font-bold">{item.value}</div>
-                  </div>
-                ))}
+              <div className="grid grid-cols-2 gap-6">
+                 {[
+                   { icon: <Activity className="text-red-500" />, label: "Manual Data Entry" },
+                   { icon: <Layers className="text-blue-500" />, label: "Changing Surcharges" },
+                   { icon: <Globe className="text-emerald-500" />, label: "Exchange Rate Practice" },
+                   { icon: <AlertCircle className="text-amber-500" />, label: "Incoterm Deviations" },
+                 ].map((item, i) => (
+                   <div key={i} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      {item.icon} {item.label}
+                   </div>
+                 ))}
               </div>
             </FadeIn>
             <FadeIn direction="left">
-               <div className="relative group">
-                  <div className="absolute -inset-10 bg-blue-600/5 blur-[100px] rounded-full group-hover:bg-blue-600/10 transition-all"></div>
-                  <div className="p-8 glass rounded-[3rem] border border-white/10 glow-red">
-                    <div className="flex items-center gap-2 mb-6 border-b border-white/5 pb-4">
-                       <Radar className="w-4 h-4 text-red-500" />
-                       <span className="mono text-[10px] uppercase font-bold text-slate-500">Anomaly Detection: Ocean Freight</span>
-                    </div>
-                    <div className="space-y-4">
-                       {Array.from({ length: 4 }).map((_, i) => (
-                         <div key={i} className="flex items-center justify-between mono text-[10px] p-3 bg-white/5 rounded-lg border border-white/5">
-                            <span className="text-slate-500">REF_{88219 + i}X</span>
-                            <span className="text-blue-400 font-bold">CARRIER_BILL_MATCHING...</span>
-                            <span className={`font-black ${i === 2 ? 'text-red-500' : 'text-green-500'}`}>{i === 2 ? 'FAILED' : 'OK'}</span>
-                         </div>
-                       ))}
-                       <div className="mt-8 p-6 bg-red-500/10 border border-red-500/20 rounded-2xl">
-                          <div className="flex items-center gap-4">
-                             <AlertCircle className="w-6 h-6 text-red-500" />
-                             <div>
-                                <div className="text-white font-black text-xs uppercase">Deviation Identified</div>
-                                <div className="text-red-400 text-[10px] uppercase font-bold">Unagreed Bunker Surcharge Applied</div>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
+               <div className="p-12 glass rounded-[3rem] border border-white/10 glow-red relative overflow-hidden">
+                  <div className="scanner-line"></div>
+                  <div className="flex items-center justify-between mb-8">
+                     <Radar className="text-red-500 w-5 h-5 animate-pulse" />
+                     <span className="mono text-[10px] font-bold text-slate-500 uppercase">Detection Engine: Active</span>
+                  </div>
+                  <div className="space-y-4 mono text-[10px]">
+                     <div className="p-3 bg-white/5 rounded border border-white/10 flex justify-between">
+                        <span className="text-slate-500">INVOICE_REF_771A</span> <span className="text-blue-400">NORMALIZING...</span>
+                     </div>
+                     <div className="p-3 bg-white/5 rounded border border-white/10 flex justify-between">
+                        <span className="text-slate-500">TERM_CHECK_INC2020</span> <span className="text-green-500">OK</span>
+                     </div>
+                     <div className="p-3 bg-red-500/10 rounded border border-red-500/30 flex justify-between">
+                        <span className="text-red-500 font-bold">THC_SURCHARGE_MATCH</span> <span className="text-red-500 font-bold">FAILED_DEVIATION</span>
+                     </div>
                   </div>
                </div>
             </FadeIn>
@@ -238,48 +199,66 @@ const App: React.FC = () => {
       {/* 2. POST-AUDIT: THE ENTRY POINT */}
       <section id="post-audit" className="py-32 bg-[#020617] relative overflow-hidden">
         <div className="container mx-auto px-6">
-          <SectionHeader subtitle="Step 01" title="The Post-Audit Engine." light />
+          <div className="text-center mb-24 max-w-4xl mx-auto">
+            <FadeIn>
+              <div className="text-xs font-black text-blue-500 uppercase tracking-[0.4em] mb-4">Point 02</div>
+              <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-[0.9] mb-8">Post-Audit <br/> AI Engines.</h2>
+              <p className="text-xl text-slate-400 font-medium">
+                Our models are trained specifically on ocean carrier layout structures and forwarder billing logic, capturing all commercial data points at the line-item level.
+              </p>
+            </FadeIn>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { title: "Carrier Layouts", icon: <Ship />, desc: "Intelligence for Maersk, MSC, Hapag-Lloyd, and CMA CGM native layouts." },
+              { title: "Forwarder Logic", icon: <Workflow />, desc: "Deep extraction of complex billing structures from tier-1 freight forwarders." },
+              { title: "Line-Item Semantics", desc: "Normalized data extraction across all trade lanes and regional semantics.", icon: <Layers /> }
+            ].map((item, i) => (
+              <FadeIn key={i} delay={i * 0.1}>
+                 <div className="p-10 glass rounded-[2rem] h-full border border-white/5 group hover:bg-white/[0.04] transition-all">
+                    <div className="w-14 h-14 bg-blue-600/20 text-blue-500 rounded-xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                      {React.cloneElement(item.icon as React.ReactElement, { className: 'w-7 h-7' })}
+                    </div>
+                    <h4 className="text-xl font-black text-white mb-4 uppercase tracking-tighter">{item.title}</h4>
+                    <p className="text-slate-500 text-sm font-medium leading-relaxed">{item.desc}</p>
+                 </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. AUTOMATED VALIDATION */}
+      <section id="validation" className="py-32 bg-slate-950 ship-wake">
+        <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <FadeIn direction="right">
-              <p className="text-xl text-slate-400 font-medium leading-relaxed mb-10">
-                Our starting point. We utilize proprietary AI trained on billions of data points to extract and normalize invoice structures from all major carriers and forwarders.
-              </p>
-              <div className="space-y-6">
-                {[
-                  { title: "Carrier-Specific Layouts", desc: "Native intelligence for Maersk, MSC, Hapag, and more." },
-                  { title: "Forwarder Billing Logic", desc: "Normalized interpretation of complex logistics providers." },
-                  { title: "Line-Item Semantics", desc: "Deep extraction of operational data points across trade lanes." }
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-6 items-start">
-                    <div className="w-12 h-12 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center text-blue-500 flex-shrink-0">
-                      <FileText className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-black text-white uppercase tracking-tight mb-1">{item.title}</h4>
-                      <p className="text-slate-500 text-sm font-medium">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
+              <div className="text-xs font-black text-blue-500 uppercase tracking-[0.4em] mb-4">Point 03</div>
+              <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter leading-none mb-10 uppercase">Systematic <br/> Verification.</h2>
+              <div className="space-y-4">
+                 {[
+                   { label: "Contracted Base Rates", icon: <CheckCircle2 /> },
+                   { label: "Agreed Surcharge Validity", icon: <CheckCircle2 /> },
+                   { label: "Incoterms Responsibilities", icon: <CheckCircle2 /> },
+                   { label: "Exchange Rate Mechanisms", icon: <CheckCircle2 /> },
+                   { label: "Duplicate Billing Controls", icon: <CheckCircle2 /> },
+                   { label: "Equipment & Weight Brackets", icon: <CheckCircle2 /> }
+                 ].map((item, i) => (
+                   <div key={i} className="flex items-center gap-4 text-sm font-bold text-slate-300 p-4 glass rounded-2xl border border-white/5">
+                      <div className="text-blue-500">{item.icon}</div> {item.label}
+                   </div>
+                 ))}
               </div>
             </FadeIn>
             <FadeIn direction="left">
-               <div className="relative p-12 glass rounded-[3rem] border border-white/10 overflow-hidden">
-                  <div className="scanner-line"></div>
-                  <div className="absolute top-0 right-0 p-12 opacity-5"><Cpu size={200} /></div>
-                  <div className="space-y-4 relative z-10">
-                    <div className="h-4 w-2/3 bg-white/10 rounded-full animate-pulse"></div>
-                    <div className="h-4 w-full bg-white/5 rounded-full"></div>
-                    <div className="h-4 w-3/4 bg-white/5 rounded-full"></div>
-                    <div className="pt-8 grid grid-cols-2 gap-4">
-                      <div className="p-4 bg-blue-600/10 border border-blue-600/20 rounded-xl text-center">
-                        <div className="text-blue-500 text-xl font-black">95%+</div>
-                        <div className="text-[8px] font-black uppercase text-slate-500 tracking-widest">Extraction Precision</div>
-                      </div>
-                      <div className="p-4 bg-indigo-600/10 border border-indigo-600/20 rounded-xl text-center">
-                        <div className="text-indigo-400 text-xl font-black">200+</div>
-                        <div className="text-[8px] font-black uppercase text-slate-500 tracking-widest">Carrier Formats</div>
-                      </div>
-                    </div>
+               <div className="p-12 bg-blue-600 rounded-[3rem] text-white shadow-2xl relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform"><Target size={200} /></div>
+                  <h3 className="text-3xl font-black uppercase tracking-tighter mb-6 relative z-10">Zero Missing Data.</h3>
+                  <p className="text-blue-100 text-lg mb-8 relative z-10">
+                    Every deviation is logged, categorized, and fully traceable. We provide the documentation used directly to substantiate claims.
+                  </p>
+                  <div className="mono text-[10px] p-4 bg-slate-950/40 rounded-xl border border-white/10 relative z-10">
+                    MATCH_RESULT: $1,420.00 RECOVERY READY
                   </div>
                </div>
             </FadeIn>
@@ -287,172 +266,126 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. AUTOMATED VALIDATION */}
-      <section id="validation" className="py-32 bg-slate-950 ship-wake relative">
+      {/* 4 & 5. IMPACT & GAIN SHARE */}
+      <section id="gain-share" className="py-32 bg-[#020617] border-y border-white/5">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-24 max-w-4xl mx-auto">
-             <FadeIn>
-               <h2 className="text-sm font-black text-blue-500 uppercase tracking-[0.4em] mb-6">Validation Intelligence</h2>
-               <h3 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-[0.9] mb-8">Systematic Contract <br/> Matching.</h3>
-               <p className="text-xl text-slate-400 font-medium">Invoices are matched against contracted base rates, agreed surcharges, routing agreements, and exchange rate mechanisms.</p>
-             </FadeIn>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { icon: <Target className="text-blue-500" />, label: "Base Rates", desc: "Contracted terms enforced against actual billing." },
-              { icon: <Activity className="text-indigo-500" />, label: "Surcharges", desc: "Validity period and trade lane specific check." },
-              { icon: <Globe className="text-emerald-500" />, label: "Exchange Rates", desc: "Non-contractual markups identified instantly." },
-              { icon: <Layers className="text-slate-400" />, label: "Incoterms", desc: "Ensuring liability matches the billing entity." },
-              { icon: <CheckCircle2 className="text-blue-400" />, label: "Duplicates", desc: "Identification of redundant billing cycles." },
-              { icon: <Box className="text-amber-500" />, label: "Equipment", desc: "Weight bracket and equipment type validation." },
-            ].map((item, i) => (
-              <FadeIn key={i} delay={i * 0.05}>
-                <div className="p-10 glass rounded-[2.5rem] group hover:bg-white/[0.05] transition-all border border-white/5">
-                  <div className="mb-6 group-hover:scale-110 transition-transform">{item.icon}</div>
-                  <h4 className="text-xl font-black text-white mb-3 uppercase tracking-tighter">{item.label}</h4>
-                  <p className="text-slate-500 text-sm font-medium leading-relaxed">{item.desc}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 4. CLAIMS DOCUMENTATION & FINANCIAL IMPACT */}
-      <section className="py-32 bg-[#020617]">
-        <div className="container mx-auto px-6">
-          <div className="glass p-12 md:p-20 rounded-[4rem] relative overflow-hidden border border-white/5">
-             <div className="absolute top-0 right-0 p-20 opacity-5 pointer-events-none">
-                <TrendingUp size={400} />
-             </div>
-             <div className="grid lg:grid-cols-2 gap-16 relative z-10">
-                <div>
-                   <SectionHeader subtitle="Impact" title="Recovered Cash Flow." light />
-                   <p className="text-xl text-slate-400 font-medium mb-12">
-                     Every deviation is logged and categorized. The system produces a structured audit report used directly to substantiate claims against suppliers.
-                   </p>
-                   <div className="flex gap-10">
-                      <div className="p-8 bg-blue-600 rounded-3xl text-white shadow-2xl shadow-blue-600/30">
-                         <div className="text-5xl font-black">1–3%</div>
-                         <div className="text-[10px] font-black uppercase tracking-widest mt-2">Refund Yield</div>
-                      </div>
-                      <div className="flex flex-col justify-center">
-                         <div className="text-white font-black text-xl mb-1">Measurable & Defensible.</div>
-                         <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest leading-none">Not theoretical. Real Cash.</div>
-                      </div>
-                   </div>
-                </div>
-                <div className="h-[400px]">
-                   <ResponsiveContainer width="100%" height="100%">
+          <div className="flex flex-col lg:flex-row gap-12">
+            <div className="lg:w-1/2">
+               <FadeIn direction="right">
+                 <div className="text-xs font-black text-blue-500 uppercase tracking-[0.4em] mb-4">Point 04 & 05</div>
+                 <h2 className="text-5xl font-black text-white tracking-tighter uppercase mb-8">Risk-Free <br/> Cash Recovery.</h2>
+                 <p className="text-xl text-slate-400 font-medium leading-relaxed mb-10">
+                   Typical Outcome: <span className="text-white">Refunds of 1–3% of annual spend.</span> This is recovered cash, not theoretical value.
+                 </p>
+                 <div className="p-8 bg-blue-600 rounded-3xl text-white shadow-2xl shadow-blue-600/30 inline-block">
+                    <div className="text-sm font-bold uppercase tracking-widest mb-2">Gain Share Model</div>
+                    <div className="text-4xl font-black">No Refund – No Payment</div>
+                 </div>
+               </FadeIn>
+            </div>
+            <div className="lg:w-1/2">
+               <FadeIn direction="left">
+                 <div className="h-[400px] glass rounded-[3rem] p-8">
+                    <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={chartData}>
                         <defs>
-                          <linearGradient id="colorRec" x1="0" y1="0" x2="0" y2="1">
+                          <linearGradient id="colorMs" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3}/>
                             <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b" />
-                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#475569'}} />
+                        <XAxis dataKey="name" hide />
                         <YAxis hide />
-                        <Tooltip contentStyle={{ background: '#0f172a', border: 'none', borderRadius: '12px', color: '#fff' }} />
-                        <Area type="monotone" dataKey="spend" stroke="#334155" strokeWidth={2} fill="transparent" />
-                        <Area type="monotone" dataKey="recovered" stroke="#2563eb" strokeWidth={4} fillOpacity={1} fill="url(#colorRec)" />
+                        <Tooltip contentStyle={{ background: '#0f172a', border: 'none', borderRadius: '12px' }} />
+                        <Area type="monotone" dataKey="market" stroke="#334155" strokeWidth={2} fill="transparent" />
+                        <Area type="monotone" dataKey="ms" stroke="#2563eb" strokeWidth={4} fillOpacity={1} fill="url(#colorMs)" />
                       </AreaChart>
-                   </ResponsiveContainer>
-                   <div className="flex justify-center gap-10 mt-6">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-slate-700"></div>
-                        <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Total Spend</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                        <span className="text-[10px] font-black uppercase text-blue-500 tracking-widest">Recovered Capital</span>
-                      </div>
-                   </div>
-                </div>
-             </div>
+                    </ResponsiveContainer>
+                    <div className="flex justify-center gap-6 mt-4">
+                       <div className="flex items-center gap-2 text-[10px] font-black uppercase text-slate-500"><div className="w-3 h-3 bg-slate-700 rounded-full"></div> Total Cost</div>
+                       <div className="flex items-center gap-2 text-[10px] font-black uppercase text-blue-500"><div className="w-3 h-3 bg-blue-600 rounded-full"></div> Audited Cost</div>
+                    </div>
+                 </div>
+               </FadeIn>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 5. COMMERCIAL MODEL: GAIN SHARE */}
-      <section id="gain-share" className="py-32 bg-slate-950 relative border-y border-white/5">
+      {/* 6. PRE-AUDIT: PREVENTION */}
+      <section id="pre-audit" className="py-32 bg-slate-950">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <FadeIn>
-              <div className="inline-flex items-center gap-2 px-6 py-2 bg-white text-slate-950 rounded-full font-black text-xs uppercase tracking-[0.4em] mb-12 shadow-2xl">
-                Aligned Incentives
-              </div>
-              <h3 className="text-5xl md:text-8xl font-black text-white tracking-tighter uppercase leading-none mb-12">Outcome <br/> <span className="text-blue-600">Based.</span></h3>
-              <p className="text-xl text-slate-400 font-medium mb-16 leading-relaxed">
-                Our post-audit offering is strictly risk-free. No upfront fees, no fixed costs. We are paid solely based on what we recover.
-              </p>
-              <div className="grid sm:grid-cols-3 gap-6">
-                 {["No Refund – No Payment", "No Startup Costs", "Full Alignment"].map(item => (
-                   <div key={item} className="p-6 glass rounded-2xl border border-white/5 flex items-center justify-center gap-3 group hover:border-blue-600/30 transition-all">
-                      <CheckCircle2 className="w-5 h-5 text-blue-500" />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">{item}</span>
-                   </div>
-                 ))}
-              </div>
-            </FadeIn>
-          </div>
-        </div>
-      </section>
-
-      {/* 6 & 7. PRE-AUDIT & CLEARING CENTER */}
-      <section id="clearing" className="py-32 bg-[#020617] overflow-hidden">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-10">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
              <FadeIn direction="right">
-                <div className="p-16 glass rounded-[3rem] h-full relative group border border-white/5 hover:bg-white/[0.04] transition-all">
-                   <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:scale-110 transition-transform"><ShieldCheck size={200} /></div>
-                   <div className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-500 mb-6 italic">Preventative Step</div>
+                <div className="p-16 glass rounded-[3rem] border border-white/5 relative group overflow-hidden">
+                   <div className="absolute top-0 right-0 p-12 opacity-5 group-hover:scale-110 transition-transform"><ShieldCheck size={250} /></div>
+                   <div className="text-xs font-black text-blue-500 uppercase tracking-[0.4em] mb-4">Point 06</div>
                    <h3 className="text-4xl font-black text-white uppercase tracking-tighter mb-8 leading-none">Pre-Audit <br/> Evolution.</h3>
-                   <p className="text-slate-400 mb-8 font-medium leading-relaxed">
-                     Prevent cash leakage before payment occurs. Deviations are disputed proactively and resolved upstream with carriers.
+                   <p className="text-slate-400 font-medium leading-relaxed mb-10">
+                      Prevent cash leakage before payment occurs. Deviations are disputed proactively and resolved upstream, improving supplier discipline.
                    </p>
                    <ul className="space-y-4">
-                      {["Dispute Upstream", "Admin Load Reduction", "Instant Margin Protection"].map(li => (
+                      {["Dispute resolution upstream", "Reduced admin workload", "Prevents cash outflow leakage"].map(li => (
                         <li key={li} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-300">
-                           <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div> {li}
+                           <div className="w-2 h-2 rounded-full bg-blue-600"></div> {li}
                         </li>
                       ))}
                    </ul>
                 </div>
              </FadeIn>
-             <FadeIn direction="left" delay={0.2}>
-                <div className="p-16 bg-blue-600 rounded-[3rem] h-full relative group overflow-hidden text-white shadow-2xl">
-                   <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform"><Anchor size={200} /></div>
-                   <div className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-900 mb-6 italic">Full Lifecycle</div>
-                   <h3 className="text-4xl font-black text-white uppercase tracking-tighter mb-8 leading-none">The Clearing <br/> Center.</h3>
-                   <p className="text-blue-100 mb-8 font-medium leading-relaxed">
-                     Our most comprehensive offering. A single controlled process from negotiated rate to paid invoice.
-                   </p>
-                   <div className="grid grid-cols-2 gap-3">
-                      {["Tendering", "Rate Mgmt", "Pre-Audit", "Validation", "Payment", "Settlement"].map(li => (
-                        <div key={li} className="px-4 py-2 bg-white/10 rounded-xl text-[8px] font-black uppercase tracking-widest border border-white/10 text-center">
-                           {li}
-                        </div>
-                      ))}
-                   </div>
+             <FadeIn direction="left">
+                <div className="text-left">
+                  <h3 className="text-5xl font-black text-white uppercase tracking-tighter mb-8 leading-tight">Proactive <br/> Discipline.</h3>
+                  <p className="text-lg text-slate-500 leading-relaxed font-medium">
+                    Pre-audit integration ensures that error-riddled invoices never reach your finance books, enforcing contract integrity at the point of origin.
+                  </p>
                 </div>
              </FadeIn>
           </div>
         </div>
       </section>
 
-      {/* 8. BOTTOM LINE */}
+      {/* 7. CLEARING CENTER: END-TO-END */}
+      <section id="clearing" className="py-32 bg-[#020617] relative">
+        <div className="container mx-auto px-6">
+           <FadeIn>
+              <div className="text-center mb-24 max-w-4xl mx-auto">
+                 <div className="text-xs font-black text-blue-500 uppercase tracking-[0.4em] mb-4">Point 07</div>
+                 <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none mb-10">The Clearing <br/> Center.</h2>
+                 <p className="text-xl text-slate-400 font-medium">Full-service lifecycle solution from rate negotiation to payment execution.</p>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                 {[
+                   { label: "Procurement", icon: <Briefcase /> },
+                   { label: "Rate Mgmt", icon: <Scale /> },
+                   { label: "Allocation", icon: <Workflow /> },
+                   { label: "Freight Audit", icon: <FileText /> },
+                   { label: "Validation", icon: <Target /> },
+                   { label: "Payment", icon: <Lock /> },
+                   { label: "Settlement", icon: <Anchor /> }
+                 ].map((item, i) => (
+                   <div key={i} className="p-6 glass rounded-2xl border border-white/5 text-center flex flex-col items-center gap-4 hover:bg-blue-600 transition-all cursor-default group">
+                      <div className="text-slate-500 group-hover:text-white transition-colors">{item.icon}</div>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-slate-300 group-hover:text-white">{item.label}</div>
+                   </div>
+                 ))}
+              </div>
+           </FadeIn>
+        </div>
+      </section>
+
+      {/* 8. BOTTOM LINE: SCALABLE CONTROL */}
       <section className="py-40 bg-slate-950 relative overflow-hidden">
         <div className="container mx-auto px-6 text-center">
            <FadeIn>
-              <h3 className="text-4xl md:text-[6rem] font-black text-white tracking-tighter uppercase leading-[0.8] mb-12">
-                 The Systematic <br/> <span className="text-blue-600">Enforcer.</span>
+              <div className="text-xs font-black text-blue-500 uppercase tracking-[0.4em] mb-8">Point 08: The Bottom Line</div>
+              <h3 className="text-4xl md:text-[7rem] font-black text-white tracking-tighter uppercase leading-[0.8] mb-12">
+                 Systematic <br/> Enforcement.
               </h3>
-              <div className="max-w-3xl mx-auto p-12 glass rounded-[3rem] relative border border-white/5">
-                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-1 bg-blue-600"></div>
-                 <p className="text-2xl text-slate-300 font-medium leading-tight">
+              <div className="max-w-4xl mx-auto p-16 glass rounded-[4rem] relative overflow-hidden border border-white/5">
+                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-transparent"></div>
+                 <p className="text-2xl md:text-4xl text-slate-300 font-medium leading-tight">
                    "This is not cost reduction through negotiation alone. <br/>
                    It is systematic enforcement of the agreements already in place."
                  </p>
@@ -462,63 +395,56 @@ const App: React.FC = () => {
       </section>
 
       {/* CONTACT SECTION */}
-      <section id="contact" className="py-32 bg-[#020617] relative">
-        <div className="container mx-auto px-6 relative z-10">
+      <section id="contact" className="py-32 bg-[#020617] border-t border-white/5">
+        <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-24">
             <div>
-              <h2 className="text-sm font-black text-blue-500 uppercase tracking-[0.4em] mb-8">Secure Your Capital</h2>
+              <h2 className="text-sm font-black text-blue-500 uppercase tracking-[0.4em] mb-12">Next Maturity Step</h2>
               <h3 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none mb-12 uppercase">
-                Let's Start <br/> The Audit.
+                Secure your <br/> Ocean Capital.
               </h3>
               <div className="grid sm:grid-cols-2 gap-12">
-                <div className="space-y-6 group">
-                  <div className="text-white font-black text-2xl uppercase tracking-tighter group-hover:text-blue-500 transition-colors">Daniel Martin</div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 italic">International / Austria</div>
-                  <div className="space-y-3 text-slate-400 text-sm font-medium">
-                    <a href="mailto:daniel@martin-sorbo.com" className="flex items-center gap-3 hover:text-white transition-colors"><Mail className="w-4 h-4" /> daniel@martin-sorbo.com</a>
-                    <a href="tel:+436764117351" className="flex items-center gap-3 hover:text-white transition-colors"><Phone className="w-4 h-4" /> +43 676 411 7351</a>
-                  </div>
+                <div className="space-y-6">
+                   <div className="text-white font-black text-2xl tracking-tighter uppercase">Daniel Martin</div>
+                   <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest italic">Austria / DACH</div>
+                   <div className="space-y-3 text-sm text-slate-400 font-medium">
+                      <a href="mailto:daniel@martin-sorbo.com" className="flex items-center gap-3 hover:text-white transition-colors"><Mail className="w-4 h-4" /> daniel@martin-sorbo.com</a>
+                      <a href="tel:+436764117351" className="flex items-center gap-3 hover:text-white transition-colors"><Phone className="w-4 h-4" /> +43 676 411 7351</a>
+                   </div>
                 </div>
-                <div className="space-y-6 group">
-                  <div className="text-white font-black text-2xl uppercase tracking-tighter group-hover:text-blue-500 transition-colors">Thomas Sorbo</div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4 italic">Nordic / Norway</div>
-                  <div className="space-y-3 text-slate-400 text-sm font-medium">
-                    <a href="mailto:thomas@martin-sorbo.com" className="flex items-center gap-3 hover:text-white transition-colors"><Mail className="w-4 h-4" /> thomas@martin-sorbo.com</a>
-                    <a href="tel:+4748361190" className="flex items-center gap-3 hover:text-white transition-colors"><Phone className="w-4 h-4" /> +47 483 61 190</a>
-                  </div>
+                <div className="space-y-6">
+                   <div className="text-white font-black text-2xl tracking-tighter uppercase">Thomas Sorbo</div>
+                   <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest italic">Norway / Nordic</div>
+                   <div className="space-y-3 text-sm text-slate-400 font-medium">
+                      <a href="mailto:thomas@martin-sorbo.com" className="flex items-center gap-3 hover:text-white transition-colors"><Mail className="w-4 h-4" /> thomas@martin-sorbo.com</a>
+                      <a href="tel:+4748361190" className="flex items-center gap-3 hover:text-white transition-colors"><Phone className="w-4 h-4" /> +47 483 61 190</a>
+                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="glass p-12 rounded-[3rem] shadow-2xl relative border border-white/10">
-               <h4 className="text-2xl font-black text-white mb-8 uppercase tracking-tighter">Audit Inquiry Form</h4>
+            <div className="glass p-12 rounded-[3rem] border border-white/10 shadow-2xl">
+               <h4 className="text-2xl font-black text-white mb-8 uppercase tracking-tighter">Request Audit Inquiry</h4>
                <form className="space-y-8">
                   <div className="grid sm:grid-cols-2 gap-8">
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Contact Person</label>
-                       <input type="text" className="w-full bg-transparent border-b border-white/10 px-0 py-3 text-white focus:border-blue-600 outline-none transition-all placeholder:text-slate-700" placeholder="Your name" />
+                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Full Name</label>
+                       <input type="text" className="w-full bg-transparent border-b border-white/10 px-0 py-3 text-white focus:border-blue-600 outline-none transition-all placeholder:text-slate-800" placeholder="John Doe" />
                     </div>
                     <div className="space-y-2">
                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Company</label>
-                       <input type="text" className="w-full bg-transparent border-b border-white/10 px-0 py-3 text-white focus:border-blue-600 outline-none transition-all placeholder:text-slate-700" placeholder="Your organization" />
+                       <input type="text" className="w-full bg-transparent border-b border-white/10 px-0 py-3 text-white focus:border-blue-600 outline-none transition-all placeholder:text-slate-800" placeholder="Organization" />
                     </div>
                   </div>
                   <div className="space-y-2">
-                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Annual Freight Spend</label>
-                     <select className="w-full bg-transparent border-b border-white/10 px-0 py-3 text-white focus:border-blue-600 outline-none cursor-pointer appearance-none">
-                        <option value="<1M" className="bg-slate-900">&lt; $1M USD</option>
-                        <option value="1M-10M" className="bg-slate-900">$1M – $10M USD</option>
-                        <option value="10M-50M" className="bg-slate-900">$10M – $50M USD</option>
-                        <option value=">50M" className="bg-slate-900">$50M+ USD</option>
+                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Annual Ocean Volume</label>
+                     <select className="w-full bg-transparent border-b border-white/10 px-0 py-3 text-white focus:border-blue-600 outline-none appearance-none cursor-pointer">
+                        <option value="<500" className="bg-slate-950">&lt; 500 Invoices</option>
+                        <option value="500-2k" className="bg-slate-950">500 – 2,000 Invoices</option>
+                        <option value="2k-10k" className="bg-slate-950">2,000 – 10,000 Invoices</option>
+                        <option value=">10k" className="bg-slate-950">10,000+ Invoices</option>
                      </select>
                   </div>
-                  <div className="space-y-2">
-                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Message</label>
-                     <textarea rows={3} className="w-full bg-transparent border-b border-white/10 px-0 py-3 text-white focus:border-blue-600 outline-none transition-all resize-none placeholder:text-slate-700" placeholder="Project overview..."></textarea>
-                  </div>
-                  <button className="w-full py-5 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-blue-500 transition-all shadow-xl shadow-blue-600/30">
-                    Submit Request
-                  </button>
+                  <button className="w-full py-5 bg-blue-600 text-white rounded font-black uppercase tracking-widest shadow-xl shadow-blue-600/30 hover:bg-blue-500 transition-all active:scale-95">Start Assessment</button>
                </form>
             </div>
           </div>
@@ -527,23 +453,19 @@ const App: React.FC = () => {
 
       {/* FOOTER */}
       <footer className="py-20 bg-slate-950 border-t border-white/5 relative overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-12">
+        <div className="container mx-auto px-6 relative z-10 flex flex-col md:flex-row justify-between items-center gap-12">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white text-slate-950 rounded-lg flex items-center justify-center font-black text-lg">MS</div>
-              <span className="font-bold tracking-tighter text-xl uppercase text-white">Martin & Sorbo</span>
+              <div className="w-8 h-8 bg-white text-slate-950 rounded flex items-center justify-center font-black text-sm">MS</div>
+              <span className="font-bold tracking-tighter text-lg uppercase text-white">Martin & Sorbo</span>
             </div>
-            
-            <div className="flex gap-10">
+            <div className="flex gap-12">
               <a href="#" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 hover:text-white transition-colors">LinkedIn</a>
-              <a href="#" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 hover:text-white transition-colors">Legal</a>
+              <a href="#" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 hover:text-white transition-colors">Impressum</a>
             </div>
-
             <p className="text-[10px] font-bold text-slate-800 uppercase tracking-widest">
               &copy; {new Date().getFullYear()} Martin & Sorbo Intelligence.
             </p>
-          </div>
         </div>
       </footer>
     </div>

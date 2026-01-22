@@ -1,6 +1,6 @@
 {
-  "name": "Martin & Sorbo - Intelligence in Ocean Freight",
-  "description": "State-of-the-Art Ocean Freight Invoice Auditing and Intelligence. Recover lost capital and automate financial governance.",
+  "name": "martin-sorbo-intelligence",
+  "description": "State-of-the-Art Ocean Freight Invoice Auditing and Intelligence.",
   "requestFramePermissions": [
     "camera",
     "microphone"
