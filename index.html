@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Martin & Sorbo | Ocean Freight Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --maritime-blue: #0f172a;
+            --cargo-blue: #2563eb;
+            --ocean-depth: #020617;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--ocean-depth);
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .blueprint-grid {
+            background-image: radial-gradient(rgba(37, 99, 235, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .ship-wake {
+            background: linear-gradient(to bottom, transparent, rgba(37, 99, 235, 0.03), transparent);
+        }
+        .glow-blue {
+            box-shadow: 0 0 50px -10px rgba(37, 99, 235, 0.3);
+        }
+        .glow-red {
+            box-shadow: 0 0 50px -10px rgba(239, 68, 68, 0.3);
+        }
+        @keyframes scan {
+            0% { transform: translateY(-100%); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(100%); opacity: 0; }
+        }
+        .scanner-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #2563eb, transparent);
+            width: 100%;
+            position: absolute;
+            animation: scan 4s linear infinite;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "recharts": "https://esm.sh/recharts@^3.7.0",
+    "framer-motion": "https://esm.sh/framer-motion@^11.11.11"
+  }
+}
+</script>
+</head>
+<body class="selection:bg-blue-600 selection:text-white">
+    <div id="root"></div>
+</body>
+</html>
