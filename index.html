@@ -17,7 +17,10 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--ocean-depth);
             color: #f1f5f9;
+            margin: 0;
+            padding: 0;
             overflow-x: hidden;
+            min-height: 100vh;
         }
         .mono {
             font-family: 'JetBrains Mono', monospace;
@@ -33,12 +36,6 @@
         }
         .ship-wake {
             background: linear-gradient(to bottom, transparent, rgba(37, 99, 235, 0.03), transparent);
-        }
-        .glow-blue {
-            box-shadow: 0 0 50px -10px rgba(37, 99, 235, 0.3);
-        }
-        .glow-red {
-            box-shadow: 0 0 50px -10px rgba(239, 68, 68, 0.3);
         }
         @keyframes scan {
             0% { transform: translateY(-100%); opacity: 0; }
@@ -56,17 +53,25 @@
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "recharts": "https://esm.sh/recharts@^3.7.0",
-    "framer-motion": "https://esm.sh/framer-motion@^11.11.11"
+    "react": "https://esm.sh/react@19.0.0",
+    "react/": "https://esm.sh/react@19.0.0/",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/": "https://esm.sh/react-dom@19.0.0/",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.462.0?deps=react@19.0.0",
+    "recharts": "https://esm.sh/recharts@3.0.0?deps=react@19.0.0,react-dom@19.0.0",
+    "framer-motion": "https://esm.sh/framer-motion@11.15.0?deps=react@19.0.0,react-dom@19.0.0"
   }
 }
 </script>
 </head>
 <body class="selection:bg-blue-600 selection:text-white">
-    <div id="root"></div>
+    <div id="root">
+        <div style="display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; gap: 20px; background: #020617;">
+            <div style="width: 40px; height: 40px; background: #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-family: sans-serif;">MS</div>
+            <div style="font-family: sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 0.4em; color: #475569;">Initializing Intelligence...</div>
+        </div>
+    </div>
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>

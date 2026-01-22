@@ -12,7 +12,6 @@ import {
   ArrowRight,
   Globe,
   Database,
-  Zap,
   ShieldCheck,
   TrendingUp,
   Activity,
@@ -26,8 +25,7 @@ import {
   ChevronDown,
   Briefcase,
   Lock,
-  ArrowUpRight,
-  Factory
+  Box
 } from 'lucide-react';
 import { 
   XAxis, 
@@ -38,7 +36,7 @@ import {
   AreaChart,
   Area
 } from 'recharts';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 const chartData = [
   { name: 'Jan', market: 100, ms: 100 },
@@ -61,12 +59,12 @@ const FadeIn: React.FC<FadeInProps> = ({ children, delay = 0, direction = 'up' }
     <motion.div
       initial={{ 
         opacity: 0, 
-        y: direction === 'up' ? 30 : direction === 'down' ? -30 : 0, 
-        x: direction === 'left' ? 30 : direction === 'right' ? -30 : 0 
+        y: direction === 'up' ? 20 : direction === 'down' ? -20 : 0, 
+        x: direction === 'left' ? 20 : direction === 'right' ? -20 : 0 
       }}
       whileInView={{ opacity: 1, y: 0, x: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>
@@ -84,8 +82,8 @@ const Header = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6 ${scrolled ? 'bg-slate-950/90 backdrop-blur-md border-b border-white/5 py-4' : 'bg-transparent'}`}>
       <div className="container mx-auto px-6 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-600 rounded flex items-center justify-center font-black text-white text-xl">MS</div>
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="w-10 h-10 bg-blue-600 rounded flex items-center justify-center font-black text-white text-xl transition-transform group-hover:rotate-3">MS</div>
           <span className="font-bold tracking-tighter text-xl hidden sm:block uppercase">Martin & Sorbo</span>
         </div>
         <div className="hidden lg:flex items-center gap-8">
@@ -109,7 +107,7 @@ const App: React.FC = () => {
       <motion.div className="fixed top-0 left-0 right-0 h-1 bg-blue-600 origin-left z-[70]" style={{ scaleX }} />
       <Header />
 
-      {/* 0. HERO: CINEMATIC START */}
+      {/* 0. HERO */}
       <section className="relative h-screen flex items-center overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0 opacity-40">
           <img 
@@ -149,7 +147,7 @@ const App: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* 1. THE PROBLEM: COMPLEX & OPAQUE */}
+      {/* 1. THE PROBLEM */}
       <section id="problem" className="py-32 bg-slate-950 blueprint-grid relative">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
@@ -161,10 +159,10 @@ const App: React.FC = () => {
               </p>
               <div className="grid grid-cols-2 gap-6">
                  {[
-                   { icon: <Activity className="text-red-500" />, label: "Manual Data Entry" },
-                   { icon: <Layers className="text-blue-500" />, label: "Changing Surcharges" },
-                   { icon: <Globe className="text-emerald-500" />, label: "Exchange Rate Practice" },
-                   { icon: <AlertCircle className="text-amber-500" />, label: "Incoterm Deviations" },
+                   { icon: <Activity className="text-red-500 w-4 h-4" />, label: "Manual Data Entry" },
+                   { icon: <Layers className="text-blue-500 w-4 h-4" />, label: "Changing Surcharges" },
+                   { icon: <Globe className="text-emerald-500 w-4 h-4" />, label: "Exchange Rate Practice" },
+                   { icon: <AlertCircle className="text-amber-500 w-4 h-4" />, label: "Incoterm Deviations" },
                  ].map((item, i) => (
                    <div key={i} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
                       {item.icon} {item.label}
@@ -180,13 +178,13 @@ const App: React.FC = () => {
                      <span className="mono text-[10px] font-bold text-slate-500 uppercase">Detection Engine: Active</span>
                   </div>
                   <div className="space-y-4 mono text-[10px]">
-                     <div className="p-3 bg-white/5 rounded border border-white/10 flex justify-between">
+                     <div className="p-3 bg-white/5 rounded border border-white/10 flex justify-between items-center">
                         <span className="text-slate-500">INVOICE_REF_771A</span> <span className="text-blue-400">NORMALIZING...</span>
                      </div>
-                     <div className="p-3 bg-white/5 rounded border border-white/10 flex justify-between">
+                     <div className="p-3 bg-white/5 rounded border border-white/10 flex justify-between items-center">
                         <span className="text-slate-500">TERM_CHECK_INC2020</span> <span className="text-green-500">OK</span>
                      </div>
-                     <div className="p-3 bg-red-500/10 rounded border border-red-500/30 flex justify-between">
+                     <div className="p-3 bg-red-500/10 rounded border border-red-500/30 flex justify-between items-center">
                         <span className="text-red-500 font-bold">THC_SURCHARGE_MATCH</span> <span className="text-red-500 font-bold">FAILED_DEVIATION</span>
                      </div>
                   </div>
@@ -196,7 +194,7 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. POST-AUDIT: THE ENTRY POINT */}
+      {/* 2. POST-AUDIT */}
       <section id="post-audit" className="py-32 bg-[#020617] relative overflow-hidden">
         <div className="container mx-auto px-6">
           <div className="text-center mb-24 max-w-4xl mx-auto">
@@ -210,14 +208,14 @@ const App: React.FC = () => {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { title: "Carrier Layouts", icon: <Ship />, desc: "Intelligence for Maersk, MSC, Hapag-Lloyd, and CMA CGM native layouts." },
-              { title: "Forwarder Logic", icon: <Workflow />, desc: "Deep extraction of complex billing structures from tier-1 freight forwarders." },
-              { title: "Line-Item Semantics", desc: "Normalized data extraction across all trade lanes and regional semantics.", icon: <Layers /> }
+              { title: "Carrier Layouts", icon: <Ship className="w-7 h-7" />, desc: "Intelligence for Maersk, MSC, Hapag-Lloyd, and CMA CGM native layouts." },
+              { title: "Forwarder Logic", icon: <Workflow className="w-7 h-7" />, desc: "Deep extraction of complex billing structures from tier-1 freight forwarders." },
+              { title: "Line-Item Semantics", desc: "Normalized data extraction across all trade lanes and regional semantics.", icon: <Layers className="w-7 h-7" /> }
             ].map((item, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                  <div className="p-10 glass rounded-[2rem] h-full border border-white/5 group hover:bg-white/[0.04] transition-all">
                     <div className="w-14 h-14 bg-blue-600/20 text-blue-500 rounded-xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                      {React.cloneElement(item.icon as React.ReactElement, { className: 'w-7 h-7' })}
+                      {item.icon}
                     </div>
                     <h4 className="text-xl font-black text-white mb-4 uppercase tracking-tighter">{item.title}</h4>
                     <p className="text-slate-500 text-sm font-medium leading-relaxed">{item.desc}</p>
@@ -228,7 +226,7 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. AUTOMATED VALIDATION */}
+      {/* 3. VALIDATION */}
       <section id="validation" className="py-32 bg-slate-950 ship-wake">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
@@ -237,12 +235,12 @@ const App: React.FC = () => {
               <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter leading-none mb-10 uppercase">Systematic <br/> Verification.</h2>
               <div className="space-y-4">
                  {[
-                   { label: "Contracted Base Rates", icon: <CheckCircle2 /> },
-                   { label: "Agreed Surcharge Validity", icon: <CheckCircle2 /> },
-                   { label: "Incoterms Responsibilities", icon: <CheckCircle2 /> },
-                   { label: "Exchange Rate Mechanisms", icon: <CheckCircle2 /> },
-                   { label: "Duplicate Billing Controls", icon: <CheckCircle2 /> },
-                   { label: "Equipment & Weight Brackets", icon: <CheckCircle2 /> }
+                   { label: "Contracted Base Rates", icon: <CheckCircle2 className="w-5 h-5" /> },
+                   { label: "Agreed Surcharge Validity", icon: <CheckCircle2 className="w-5 h-5" /> },
+                   { label: "Incoterms Responsibilities", icon: <CheckCircle2 className="w-5 h-5" /> },
+                   { label: "Exchange Rate Mechanisms", icon: <CheckCircle2 className="w-5 h-5" /> },
+                   { label: "Duplicate Billing Controls", icon: <CheckCircle2 className="w-5 h-5" /> },
+                   { label: "Equipment & Weight Brackets", icon: <CheckCircle2 className="w-5 h-5" /> }
                  ].map((item, i) => (
                    <div key={i} className="flex items-center gap-4 text-sm font-bold text-slate-300 p-4 glass rounded-2xl border border-white/5">
                       <div className="text-blue-500">{item.icon}</div> {item.label}
@@ -313,7 +311,7 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. PRE-AUDIT: PREVENTION */}
+      {/* 6. PRE-AUDIT */}
       <section id="pre-audit" className="py-32 bg-slate-950">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
@@ -346,7 +344,7 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* 7. CLEARING CENTER: END-TO-END */}
+      {/* 7. CLEARING CENTER */}
       <section id="clearing" className="py-32 bg-[#020617] relative">
         <div className="container mx-auto px-6">
            <FadeIn>
@@ -357,13 +355,13 @@ const App: React.FC = () => {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
                  {[
-                   { label: "Procurement", icon: <Briefcase /> },
-                   { label: "Rate Mgmt", icon: <Scale /> },
-                   { label: "Allocation", icon: <Workflow /> },
-                   { label: "Freight Audit", icon: <FileText /> },
-                   { label: "Validation", icon: <Target /> },
-                   { label: "Payment", icon: <Lock /> },
-                   { label: "Settlement", icon: <Anchor /> }
+                   { label: "Procurement", icon: <Briefcase className="w-5 h-5" /> },
+                   { label: "Rate Mgmt", icon: <Scale className="w-5 h-5" /> },
+                   { label: "Allocation", icon: <Workflow className="w-5 h-5" /> },
+                   { label: "Freight Audit", icon: <FileText className="w-5 h-5" /> },
+                   { label: "Validation", icon: <Target className="w-5 h-5" /> },
+                   { label: "Payment", icon: <Lock className="w-5 h-5" /> },
+                   { label: "Settlement", icon: <Anchor className="w-5 h-5" /> }
                  ].map((item, i) => (
                    <div key={i} className="p-6 glass rounded-2xl border border-white/5 text-center flex flex-col items-center gap-4 hover:bg-blue-600 transition-all cursor-default group">
                       <div className="text-slate-500 group-hover:text-white transition-colors">{item.icon}</div>
@@ -375,7 +373,7 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* 8. BOTTOM LINE: SCALABLE CONTROL */}
+      {/* 8. BOTTOM LINE */}
       <section className="py-40 bg-slate-950 relative overflow-hidden">
         <div className="container mx-auto px-6 text-center">
            <FadeIn>
@@ -394,7 +392,7 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* CONTACT SECTION */}
+      {/* CONTACT */}
       <section id="contact" className="py-32 bg-[#020617] border-t border-white/5">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-24">
@@ -424,7 +422,7 @@ const App: React.FC = () => {
             </div>
             <div className="glass p-12 rounded-[3rem] border border-white/10 shadow-2xl">
                <h4 className="text-2xl font-black text-white mb-8 uppercase tracking-tighter">Request Audit Inquiry</h4>
-               <form className="space-y-8">
+               <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
                   <div className="grid sm:grid-cols-2 gap-8">
                     <div className="space-y-2">
                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Full Name</label>
